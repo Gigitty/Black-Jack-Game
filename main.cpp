@@ -23,7 +23,7 @@ struct Card
   string face;
   int cardValue;
   int cardPlayStatus;
-  
+  bool isAce = false;
 
 }Deck[53];//Array for cards
 
@@ -33,10 +33,11 @@ void welcomeScreen ();
 void deckOfCards();
 void displayCard(Card &card);
 Card dealCard();
+char hOSOption(int playerTotal, char hitOrStand);
 
 //Booleans
 
-bool userQuit = false;
+bool isBust = false;
 
 
 
@@ -68,7 +69,7 @@ int main()
   int handBet = 0;//How much the player would want to bet
   char hitOrStand;//Hit or Stand Option
   char playerChoice;//To End the Game Loop
-  bool isBust = false;//Indicate if player loss resulted from a Bust    
+  bool userQuit = false;//Indicate if player loss resulted from a Bust    
 
 
   deckOfCards();//Initializes the deck
@@ -108,48 +109,12 @@ int main()
 
   displayCard(dealerCard1); cout << " & X"; cout << endl << endl << endl; 
 
-//Nested if statemenst so the player can keep hitting if desired or stand
   playerTotal = playerCard1.cardValue + playerCard2.cardValue;
 
-  if (playerTotal > 21) {
-
-    cout << "Over 21. Bust." << endl;
-    isBust = true;
-    hitOrStand = 's';   
-  }
-  else if (playerTotal == 21) {
-
-    cout << "Black Jack!" << endl;
-    hitOrStand = 's';
-  }
-  else if (playerTotal < 21) {
-
-    cout << "Would You like to Hit or Stand? (H/S)" << endl;
-    cin >> hitOrStand;
-  }
+  hitOrStand = hOSOption(playerTotal, hitOrStand);
 
   if(hitOrStand == 'h') {
-
-    playerCard3 = dealCard();
-    displayCard(playerCard3); cout << endl;
-    playerTotal += playerCard3.cardValue;
-
-    if(playerTotal > 21) {
-
-      cout << "Over 21. Bust." << endl;
-      isBust = true;
-      hitOrStand = 's';
-    }
-    else if(playerTotal == 21) {
-
-      cout << "21. Black Jack!." << endl;
-      hitOrStand = 's';
-    }
-    else if(playerTotal < 21) {
-
-      cout << "Would You like to Hit or Stand? (H/S)" << endl;
-      cin >> hitOrStand;
-    } 
+    hitOrStand = hOSOption(playerTotal, hitOrStand); 
   }   
 
   if(hitOrStand == 'h') {
@@ -157,20 +122,7 @@ int main()
     playerCard4 = dealCard();
     displayCard(playerCard4); cout << endl;
     playerTotal += playerCard4.cardValue;
-
-    if(playerTotal > 21) {
-      cout << "Over 21. Bust." << endl;
-      isBust = true;
-      hitOrStand = 's';
-    }
-    else if(playerTotal == 21) {
-      cout << "21. Black Jack!" << endl;
-      hitOrStand = 's';
-    }
-    else if(playerTotal < 21) {
-      cout << "Would You like to Hit or Stand? (H/S)" << endl;
-      cin >> hitOrStand;
-    }
+    hitOrStand = hOSOption(playerTotal, hitOrStand);
   }
 
   if(hitOrStand == 'h') { 
@@ -178,18 +130,7 @@ int main()
     playerCard5 = dealCard();
     displayCard(playerCard5); cout << endl;
     playerTotal += playerCard5.cardValue;
-
-    if(playerTotal > 21) {
-      cout << "Over 21. Bust." << endl;
-      isBust = true;
-      hitOrStand = 's';
-    }
-    else if(playerTotal == 21) {
-      cout << "21. Black Jack!" << endl;
-    }
-    else if(playerTotal < 21) {
-          
-    }
+    hitOrStand = hOSOption(playerTotal, hitOrStand);
   }
   
   if(isBust == true){
@@ -234,7 +175,7 @@ int main()
       else if ((dealerTotal == playerTotal) && (dealerTotal > 16)){
         cout << "Push" << endl;
         currentScore += handBet;
-  
+
       }
       else if((dealerTotal < 21) && (dealerTotal < playerTotal)) {
         dealerCard4 = dealCard();
@@ -317,7 +258,7 @@ void welcomeScreen ()
 
 void deckOfCards()
 {
-  string face [13] = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
+  string face [13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
   string suit [4] = {"Spades", "Clubs", "Hearts", "Diamnonds"};
   int cardValue [13] = {11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10};
   int cardPlayStatus[3] = {0, 1, 2}; 
@@ -330,8 +271,11 @@ void deckOfCards()
 		Deck[i].suit = suit[suitIndex];
 		Deck[i].cardValue = cardValue[i % 13];
 		Deck[i].cardPlayStatus = 0;
-		if ((i + 1) % 13 == 0)
+
+		if ((i + 1) % 13 == 0){
+      Deck[i].isAce = true;
 			suitIndex++;
+    }
   }
 
   for (int x = 0; x < 600; x++)
@@ -379,14 +323,28 @@ Card dealCard()
 }//end of dealCard
 
 
-void displayCard(Card &card)
-{
-  if (card.cardValue == 11)
-  {
-    card.cardValue = 1;
+void displayCard(Card &card) {
+  cout << card.face << " of " << card.suit;
+}//end of displayCard
+
+char hOSOption(int playerTotal, char hitOrStand) {
+
+  if (playerTotal > 21) {
+
+    cout << "Over 21. Bust." << endl;
+    isBust = true;
+    hitOrStand = 's';   
+  }
+  else if (playerTotal == 21) {
+
+    cout << "Black Jack!" << endl;
+    hitOrStand = 's';
+  }
+  else if (playerTotal < 21) {
+
+    cout << "Would You like to Hit or Stand? (H/S)" << endl;
+    cin >> hitOrStand;
   }
 
-  cout << card.face << " of " << card.suit;
-  card.cardPlayStatus = 1;
-
-}//end of displayCard
+  return hitOrStand;
+}
