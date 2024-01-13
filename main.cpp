@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <ctime>
-#include<unistd.h>
+//#include<unistd.h>
 using namespace std;
 
 
@@ -45,25 +45,30 @@ int main()
 {
   srand(time(NULL));//Random Number Generator Seeded
   string name;//String for Name Input
+
   //Players Cards (Only Up to Five Cards in Black Jack)
   Card playerCard1;
   Card playerCard2; 
   Card playerCard3;
   Card playerCard4;
   Card playerCard5;
+
   //Dealers Cards
   Card dealerCard1;
   Card dealerCard2;
   Card dealerCard3;
   Card dealerCard4;
   Card dealerCard5;
-  //Card Value Totals (if needed)
+
+  //Card Value Totals
   int playerTotal = 0;
   int dealerTotal = 0;
+
   int currentScore = DEFAULT_SCORE;//Initialize Score
   int handBet = 0;//How much the player would want to bet
   char hitOrStand;//Hit or Stand Option
   char playerChoice;//To End the Game Loop
+  bool isBust = false;//Indicate if player loss resulted from a Bust    
 
 
   deckOfCards();//Initializes the deck
@@ -82,6 +87,10 @@ int main()
   printf("\033c");//Clears Screen
   cout << "You have $" << currentScore << " left"<< endl;
 
+  playerTotal = 0;
+  dealerTotal = 0;
+  isBust = false;
+
   //Makes the members of specific Deck[x] belong to  variable
 
   playerCard1 = dealCard(); 
@@ -93,153 +102,185 @@ int main()
   
   cout <<"Your Cards" << endl;
 
-  displayCard(playerCard1); cout << " & ";  displayCard(playerCard2);cout << endl << endl << endl;
+  displayCard(playerCard1); cout << " & ";  displayCard(playerCard2); cout << endl << endl << endl;
 
   cout << "House Cards" << endl;
 
   displayCard(dealerCard1); cout << " & X"; cout << endl << endl << endl; 
 
 //Nested if statemenst so the player can keep hitting if desired or stand
+  playerTotal = playerCard1.cardValue + playerCard2.cardValue;
 
-  if((playerCard1.cardValue+playerCard2.cardValue) > 21)
-  {
+  if (playerTotal > 21) {
+
     cout << "Over 21. Bust." << endl;
-    break;
+    isBust = true;
+    hitOrStand = 's';   
   }
-  else if((playerCard1.cardValue+playerCard2.cardValue) == 21)
-  {
-    cout << "Black Jack" << endl;
+  else if (playerTotal == 21) {
+
+    cout << "Black Jack!" << endl;
+    hitOrStand = 's';
   }
-  else if((playerCard1.cardValue+playerCard2.cardValue) < 21)
-  {
+  else if (playerTotal < 21) {
+
     cout << "Would You like to Hit or Stand? (H/S)" << endl;
     cin >> hitOrStand;
+  }
 
-    if(hitOrStand == 'h')
-    {
-      playerCard3 = dealCard();
-      displayCard(playerCard3); cout << endl;
+  if(hitOrStand == 'h') {
 
-      if((playerCard1.cardValue+playerCard2.cardValue+playerCard3.cardValue) > 21)
-      {
-        cout << "Over 21. Bust." << endl;
-        break;
-      }
-      else if((playerCard1.cardValue+playerCard2.cardValue+playerCard3.cardValue) == 21)
-      {
-        cout << "21. Black Jack." << endl;
-      }
-      else if((playerCard1.cardValue+playerCard2.cardValue+playerCard3.cardValue) < 21)
-      {
-        cout << "Would You like to Hit or Stand? (H/S)" << endl;
-        cin >> hitOrStand;
-        
-        if(hitOrStand == 'h')
-        {
-          playerCard4 = dealCard();
-          displayCard(playerCard4); cout << endl;
+    playerCard3 = dealCard();
+    displayCard(playerCard3); cout << endl;
+    playerTotal += playerCard3.cardValue;
 
-          if((playerCard1.cardValue+playerCard2.cardValue+playerCard3.cardValue+playerCard4.cardValue) > 21)
-          {
-            cout << "Over 21. Bust." << endl;
-            break;
-          }
-          else if((playerCard1.cardValue+playerCard2.cardValue+playerCard3.cardValue+playerCard4.cardValue) == 21)
-          {
-            cout << "21. Black Jack" << endl;
-          }
-          else if((playerCard1.cardValue+playerCard2.cardValue+playerCard3.cardValue+playerCard4.cardValue) < 21)
-          {
-            cout << "Would You like to Hit or Stand? (H/S)" << endl;
-            cin >> hitOrStand;
+    if(playerTotal > 21) {
 
-          if(hitOrStand == 'h')
-          { 
-            playerCard5 = dealCard();
-            displayCard(playerCard5); cout << endl;
-            if((playerCard1.cardValue+playerCard2.cardValue+playerCard3.cardValue+playerCard4.cardValue+playerCard5.cardValue) > 21)
-          {
-            cout << "Over 21. Bust." << endl;
-            break;
-          }
-          else if((playerCard1.cardValue+playerCard2.cardValue+playerCard3.cardValue+playerCard4.cardValue+playerCard5.cardValue) == 21)
-          {
-            cout << "21. Black Jack." << endl;
-          }
-          else if((playerCard1.cardValue+playerCard2.cardValue+playerCard3.cardValue+playerCard4.cardValue+playerCard5.cardValue) < 21)
-          {
+      cout << "Over 21. Bust." << endl;
+      isBust = true;
+      hitOrStand = 's';
+    }
+    else if(playerTotal == 21) {
+
+      cout << "21. Black Jack!." << endl;
+      hitOrStand = 's';
+    }
+    else if(playerTotal < 21) {
+
+      cout << "Would You like to Hit or Stand? (H/S)" << endl;
+      cin >> hitOrStand;
+    } 
+  }   
+
+  if(hitOrStand == 'h') {
+
+    playerCard4 = dealCard();
+    displayCard(playerCard4); cout << endl;
+    playerTotal += playerCard4.cardValue;
+
+    if(playerTotal > 21) {
+      cout << "Over 21. Bust." << endl;
+      isBust = true;
+      hitOrStand = 's';
+    }
+    else if(playerTotal == 21) {
+      cout << "21. Black Jack!" << endl;
+      hitOrStand = 's';
+    }
+    else if(playerTotal < 21) {
+      cout << "Would You like to Hit or Stand? (H/S)" << endl;
+      cin >> hitOrStand;
+    }
+  }
+
+  if(hitOrStand == 'h') { 
+
+    playerCard5 = dealCard();
+    displayCard(playerCard5); cout << endl;
+    playerTotal += playerCard5.cardValue;
+
+    if(playerTotal > 21) {
+      cout << "Over 21. Bust." << endl;
+      isBust = true;
+      hitOrStand = 's';
+    }
+    else if(playerTotal == 21) {
+      cout << "21. Black Jack!" << endl;
+    }
+    else if(playerTotal < 21) {
           
-          }
+    }
+  }
+  
+  if(isBust == true){
+    cout << "House Wins...";
+  }
+  else{
 
+  // Second Dealer Card is Flipped and more cards are played if necessary
+    cout << "House Cards." << endl << endl << endl;
+
+    displayCard(dealerCard1); cout << endl;
+    displayCard(dealerCard2); cout << endl;
+    dealerTotal = dealerCard1.cardValue + dealerCard2.cardValue;
+
+
+    if(dealerTotal > 21) {
+      cout << "Player Wins!" << endl;
+      currentScore += 2 * handBet;
+    }
+    else if((dealerTotal > playerTotal) && (dealerTotal <= 21)) {
+      cout << "House Wins..." << endl;     
+    }
+    else if ((dealerTotal == playerTotal) && (dealerTotal > 16)){
+      cout << "Push" << endl;
+      currentScore += handBet;
+    }
+    else if((dealerTotal < 21) && (dealerTotal < playerTotal)) {
+
+      dealerCard3 = dealCard();
+      displayCard(dealerCard3); cout << endl;
+      dealerTotal += dealerCard3.cardValue;
+
+      if(dealerTotal > 21) {
+        cout << "Player Wins!" << endl;
+        currentScore += 2 * handBet;
+  
+      }
+      else if((dealerTotal > playerTotal) && (dealerTotal <= 21)) {
+        cout << "House Wins..." << endl;
+        
+      }
+      else if ((dealerTotal == playerTotal) && (dealerTotal > 16)){
+        cout << "Push" << endl;
+        currentScore += handBet;
+  
+      }
+      else if((dealerTotal < 21) && (dealerTotal < playerTotal)) {
+        dealerCard4 = dealCard();
+        displayCard(dealerCard4); cout << endl;
+        dealerTotal += dealerCard4.cardValue;
+
+        if(dealerTotal > 21) {
+          cout << "Player Wins!" << endl;
+          currentScore += 2 * handBet;
+    
+        }
+        else if((dealerTotal > playerTotal) && (dealerTotal <= 21)) {
+          cout << "House Wins..." << endl;
+    
+        }
+        else if ((dealerTotal == playerTotal) && (dealerTotal > 16)){
+          cout << "Push" << endl;
+          currentScore += handBet;
+    
+        }
+        else if((dealerTotal < 21) && (dealerTotal < playerTotal)) {
+          dealerCard5 = dealCard();
+          displayCard(dealerCard5); cout << endl;
+          dealerTotal += dealerCard5.cardValue;
+
+          if(dealerTotal > 21) {
+            cout << "Player Wins!" << endl;
+            currentScore += 2 * handBet;
+      
           }
-          } 
+          else if((dealerTotal > playerTotal) && (dealerTotal <= 21)) {
+            cout << "House Wins..." << endl;
+      
+          }
+          else if ((dealerTotal == playerTotal) && (dealerTotal > 16)){
+            cout << "Push" << endl;
+            currentScore += handBet;
+      
+          }
+          else if((dealerTotal < 21) && (dealerTotal < playerTotal)) {
+            cout << "Player Wins!" << endl;
+            currentScore += 2 * handBet;
+          }
         }
       }
     }
- 
-  }
-
-  // Second Dealer Card is Flipped and more cards are played if necessary
-  cout << "House Cards." << endl << endl << endl;
-
-  displayCard(dealerCard1); cout << endl;
-  displayCard(dealerCard2); cout << endl;
-  if((dealerCard1.cardValue+dealerCard2.cardValue) > 21)
-  {
-    cout << "Player Wins !" << endl;
-    break;
-  }
-  else if((dealerCard1.cardValue+dealerCard2.cardValue) == 21)
-  {
-    
-  }
-  else if((dealerCard1.cardValue+dealerCard2.cardValue) < 21)
-  {
-    dealerCard3 = dealCard();
-    displayCard(dealerCard3); cout << endl;
-
-    if((dealerCard1.cardValue+dealerCard2.cardValue+dealerCard3.cardValue) > 21)
-  {
-    cout << "Player Wins !" << endl;
-    break;
-  }
-  else if((dealerCard1.cardValue+dealerCard2.cardValue+dealerCard3.cardValue) == 21)
-  {
-    
-  }
-  else if((dealerCard1.cardValue+dealerCard2.cardValue+dealerCard3.cardValue) < 21)
-  {
-    dealerCard4 = dealCard();
-    displayCard(dealerCard4); cout << endl;
-    if((dealerCard1.cardValue+dealerCard2.cardValue+dealerCard3.cardValue+dealerCard4.cardValue) > 21)
-  {
-    cout << "Player Wins !" << endl;
-    break;
-  }
-  else if((dealerCard1.cardValue+dealerCard2.cardValue+dealerCard3.cardValue+dealerCard4.cardValue) == 21)
-  {
-    
-  }
-  else if((dealerCard1.cardValue+dealerCard2.cardValue+dealerCard3.cardValue+dealerCard4.cardValue) < 21)
-  {
-    dealerCard4 = dealCard();
-    displayCard(dealerCard4); cout << endl;
-    if((dealerCard1.cardValue+dealerCard2.cardValue+dealerCard3.cardValue+dealerCard4.cardValue) > 21)
-    {
-      cout << "Player Wins !" << endl;
-      break;
-    }
-    else if((dealerCard1.cardValue+dealerCard2.cardValue+dealerCard3.cardValue+dealerCard4.cardValue) == 21)
-    {
-    
-    }
-    else if((dealerCard1.cardValue+dealerCard2.cardValue+dealerCard3.cardValue+dealerCard4.cardValue) < 21)
-    {
-      dealerCard5 = dealCard();
-      displayCard(dealerCard5); cout << endl;
-    }
-  }
-  }
   }
 //Loop Starts Again if player inputs yes
   cout << "Does " << name << " want to play again? (y/n)" << endl;
@@ -257,6 +298,7 @@ int main()
 }
 return 0;
 }
+
 void welcomeScreen ()
 {
   cout << "$$$$$   $$     $$$$$$   $$$$$$$   $$   $$      $$$$$$$  $$$$$$   $$$$$$   $$   $$" << endl;
@@ -318,8 +360,21 @@ void deckOfCards()
 
 Card dealCard()
 {
-  int i = rand() % 52;
+  bool uniqueCard = false;
+  int i = 0;
 
+  while(uniqueCard == false){
+
+    i = rand() % 52;
+    if (Deck[i].cardPlayStatus == 0) {
+      uniqueCard = true;
+    }    
+    else{
+      uniqueCard = false;
+    }
+  }
+  
+  Deck[i].cardPlayStatus = 1;
   return Deck[i];
 }//end of dealCard
 
