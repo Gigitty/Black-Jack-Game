@@ -6,9 +6,10 @@
 #include <stdlib.h>
 #include <cstdio>
 #include <cstdlib>
-#include <stdlib.h>
 #include <time.h>
 #include <ctime>
+#include "Card.h"
+
 //#include<unistd.h>
 using namespace std;
 
@@ -16,30 +17,13 @@ using namespace std;
 //Constants 
 const int DEFAULT_SCORE = 1000;
 
-//Structure for cards
-struct Card 
-{
-  string suit;
-  string face;
-  int cardValue;
-  int cardPlayStatus;
-  bool isAce = false;
-
-}Deck[53];//Array for cards
-
 //Functions
 
 void welcomeScreen ();
-void deckOfCards();
-void displayCard(Card &card);
-Card dealCard();
 char hOSOption(int playerTotal, char hitOrStand);
 
-//Booleans
-
-bool isBust = false;
-
-
+int currentScore = DEFAULT_SCORE;//Initialize Score
+int handBet = 0;//How much the player would want to bet
 
 
 int main() 
@@ -64,12 +48,12 @@ int main()
   //Card Value Totals
   int playerTotal = 0;
   int dealerTotal = 0;
-
-  int currentScore = DEFAULT_SCORE;//Initialize Score
-  int handBet = 0;//How much the player would want to bet
+ 
   char hitOrStand;//Hit or Stand Option
   char playerChoice;//To End the Game Loop
-  bool userQuit = false;//Indicate if player loss resulted from a Bust    
+
+  bool isBust = false;//Indicate if player loss resulted from a Bust 
+  bool userQuit = false;   
 
 
   deckOfCards();//Initializes the deck
@@ -102,11 +86,9 @@ int main()
   //Displays Cards
   
   cout <<"Your Cards" << endl;
-
   displayCard(playerCard1); cout << " & ";  displayCard(playerCard2); cout << endl << endl << endl;
 
   cout << "House Cards" << endl;
-
   displayCard(dealerCard1); cout << " & X"; cout << endl << endl << endl; 
 
   playerTotal = playerCard1.cardValue + playerCard2.cardValue;
@@ -115,6 +97,9 @@ int main()
 
   if(hitOrStand == 'h') {
     hitOrStand = hOSOption(playerTotal, hitOrStand); 
+  }
+  else if(hitOrStand == 'b'){
+    isBust = true;
   }   
 
   if(hitOrStand == 'h') {
@@ -260,7 +245,7 @@ void deckOfCards()
 {
   string face [13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
   string suit [4] = {"Spades", "Clubs", "Hearts", "Diamnonds"};
-  int cardValue [13] = {11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10};
+  int cardValue [13] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11};
   int cardPlayStatus[3] = {0, 1, 2}; 
 
   int suitIndex = 0;
@@ -287,64 +272,22 @@ void deckOfCards()
 		Deck[52].suit = Deck[a].suit;
 		Deck[52].cardValue = Deck[a].cardValue;
 		Deck[52].cardPlayStatus = Deck[a].cardPlayStatus;
+    Deck[52].isAce = Deck[a].isAce;
 
 	  Deck[a].face = Deck[b].face;
 		Deck[a].suit = Deck[b].suit;
 		Deck[a].cardValue = Deck[b].cardValue;
 		Deck[a].cardPlayStatus = Deck[b].cardPlayStatus;
+    Deck[a].isAce = Deck[b].isAce;
 
 		Deck[b].face = Deck[52].face;
 		Deck[b].suit = Deck[52].suit;
 		Deck[b].cardValue = Deck[52].cardValue;
 		Deck[b].cardPlayStatus = Deck[52].cardPlayStatus;
+    Deck[b].isAce = Deck[52].isAce;
   }
 }//end of deckOfCards
 
-//Function returns a card with members to variable 
-
-Card dealCard()
-{
-  bool uniqueCard = false;
-  int i = 0;
-
-  while(uniqueCard == false){
-
-    i = rand() % 52;
-    if (Deck[i].cardPlayStatus == 0) {
-      uniqueCard = true;
-    }    
-    else{
-      uniqueCard = false;
-    }
-  }
-  
-  Deck[i].cardPlayStatus = 1;
-  return Deck[i];
-}//end of dealCard
 
 
-void displayCard(Card &card) {
-  cout << card.face << " of " << card.suit;
-}//end of displayCard
 
-char hOSOption(int playerTotal, char hitOrStand) {
-
-  if (playerTotal > 21) {
-
-    cout << "Over 21. Bust." << endl;
-    isBust = true;
-    hitOrStand = 's';   
-  }
-  else if (playerTotal == 21) {
-
-    cout << "Black Jack!" << endl;
-    hitOrStand = 's';
-  }
-  else if (playerTotal < 21) {
-
-    cout << "Would You like to Hit or Stand? (H/S)" << endl;
-    cin >> hitOrStand;
-  }
-
-  return hitOrStand;
-}
