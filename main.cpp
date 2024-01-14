@@ -8,7 +8,10 @@
 #include <cstdlib>
 #include <time.h>
 #include <ctime>
-#include "Card.h"
+#include <vector>
+
+#include "Card.hpp"
+#include "Player.hpp"
 
 //#include<unistd.h>
 using namespace std;
@@ -48,29 +51,58 @@ int main()
   //Card Value Totals
   int playerTotal = 0;
   int dealerTotal = 0;
+
+  int playCount = 0;//Counter for initizating player(s)
  
   char hitOrStand;//Hit or Stand Option
   char playerChoice;//To End the Game Loop
 
   bool isBust = false;//Indicate if player loss resulted from a Bust 
+  bool isValidIn = false;//Limit possible user input
   bool userQuit = false;   
 
 
   deckOfCards();//Initializes the deck
 
 
-
-  welcomeScreen ();//Displays Welcome Screen
-  cin >> name;
- 
-  while (!userQuit)
-  {
-
-  cout << "How much would " << name << " like to bet? " << flush << endl;
-  cout << "$"; cin >> handBet; 
-  currentScore -= handBet;
   printf("\033c");//Clears Screen
-  cout << "You have $" << currentScore << " left"<< endl;
+  welcomeScreen ();//Displays Welcome Screen
+  cin >> playCount;
+
+  vector <Player> players (playCount);
+
+
+
+  for(int i = 0; i < playCount; i++) {
+    cout << "Please Enter Player" << (i + 1) << "'s Name:" << endl;
+    cin >> name;      
+    players[i].setPlayerName(name);
+  }
+
+  while (!userQuit) {
+    for(int i = 0; i < playCount; i++){
+
+      cout << "How much would " << players[i].getPlayerName() << " like to bet? " << flush << endl;
+      while(!isValidIn){
+
+        cout << "$"; cin >> handBet; 
+        cin.clear(); cin.ignore(1000, '\n');
+
+      if((handBet > players[i].getPlayerScore()) || (handBet == 0)) {
+        cout << "You cannot bet that amount..." << endl;
+      }
+      else {        
+        isValidIn = true;
+      }
+    }    
+    players[i].setPlayerBet(handBet);
+    players[i].setPlayerScore(players[i].getPlayerScore() - players[i].getPlayerBet());
+    cout << "You have $" << players[i].getPlayerScore() << " left"<< endl;
+  }
+
+  printf("\033c");
+  
+  
 
   playerTotal = 0;
   dealerTotal = 0;
@@ -95,27 +127,60 @@ int main()
 
   hitOrStand = hOSOption(playerTotal, hitOrStand);
 
-  if(hitOrStand == 'h') {
-    hitOrStand = hOSOption(playerTotal, hitOrStand); 
+  isValidIn = false;
+  while(!isValidIn) {
+
+    if(hitOrStand == 'h') {
+
+      playerCard3 = dealCard();
+      displayCard(playerCard3); cout << endl;
+      playerTotal += playerCard3.cardValue;
+      hitOrStand = hOSOption(playerTotal, hitOrStand); 
+      isValidIn = true;
+    }
+    else if(hitOrStand != 's') {
+      cout << "Invalid Input. Please Enter H or S." << endl;
+    }
   }
-  else if(hitOrStand == 'b'){
-    isBust = true;
-  }   
 
-  if(hitOrStand == 'h') {
+  isValidIn = false;
+  while(!isValidIn) {
 
-    playerCard4 = dealCard();
-    displayCard(playerCard4); cout << endl;
-    playerTotal += playerCard4.cardValue;
-    hitOrStand = hOSOption(playerTotal, hitOrStand);
+    if(hitOrStand == 'h') {
+
+      playerCard4 = dealCard();
+      displayCard(playerCard4); cout << endl;
+      playerTotal += playerCard4.cardValue;
+      hitOrStand = hOSOption(playerTotal, hitOrStand);
+      isValidIn = true;
+    }
+    else if(hitOrStand == 'b') {
+      isBust = true;
+      isValidIn = true;
+    }
+    else if(hitOrStand != 's') {
+      cout << "Invalid Input. Please Enter H or S." << endl;
+    }
   }
 
-  if(hitOrStand == 'h') { 
+  isValidIn = false;
+  while(!isValidIn){
 
-    playerCard5 = dealCard();
-    displayCard(playerCard5); cout << endl;
-    playerTotal += playerCard5.cardValue;
-    hitOrStand = hOSOption(playerTotal, hitOrStand);
+    if(hitOrStand == 'h') { 
+
+      playerCard5 = dealCard();
+      displayCard(playerCard5); cout << endl;
+      playerTotal += playerCard5.cardValue;
+      hitOrStand = hOSOption(playerTotal, hitOrStand);
+      isValidIn = true;
+    }
+    else if(hitOrStand == 'b') {
+      isBust = true;
+      isValidIn = true;
+    }
+    else if(hitOrStand != 's') {
+      cout << "Invalid Input. Please Enter H or S." << endl;
+    }
   }
   
   if(isBust == true){
@@ -235,58 +300,10 @@ void welcomeScreen ()
 
   cout << "---------------------------------------------------------------------------------------" << endl << endl;
   cout <<"Welcome to The Royal House Casino \n---------------------------------\nBlackJack Table" << endl << endl << endl;
-  cout << "Please Enter Your Name:" << endl;
+  cout <<"How many players?" << endl;
   
 }//end of welcomeScreen
 
-//Function initializes deck by looping and placing the arrays into Deck[i]
-
-void deckOfCards()
-{
-  string face [13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
-  string suit [4] = {"Spades", "Clubs", "Hearts", "Diamnonds"};
-  int cardValue [13] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11};
-  int cardPlayStatus[3] = {0, 1, 2}; 
-
-  int suitIndex = 0;
-
-  for(int i = 0; i < 52; i++)
-  {
-		Deck[i].face = face[i % 13];
-		Deck[i].suit = suit[suitIndex];
-		Deck[i].cardValue = cardValue[i % 13];
-		Deck[i].cardPlayStatus = 0;
-
-		if ((i + 1) % 13 == 0){
-      Deck[i].isAce = true;
-			suitIndex++;
-    }
-  }
-
-  for (int x = 0; x < 600; x++)
-	{
-		int a = rand() % 52;
-		int b = rand() % 52;
-		
-		Deck[52].face = Deck[a].face;
-		Deck[52].suit = Deck[a].suit;
-		Deck[52].cardValue = Deck[a].cardValue;
-		Deck[52].cardPlayStatus = Deck[a].cardPlayStatus;
-    Deck[52].isAce = Deck[a].isAce;
-
-	  Deck[a].face = Deck[b].face;
-		Deck[a].suit = Deck[b].suit;
-		Deck[a].cardValue = Deck[b].cardValue;
-		Deck[a].cardPlayStatus = Deck[b].cardPlayStatus;
-    Deck[a].isAce = Deck[b].isAce;
-
-		Deck[b].face = Deck[52].face;
-		Deck[b].suit = Deck[52].suit;
-		Deck[b].cardValue = Deck[52].cardValue;
-		Deck[b].cardPlayStatus = Deck[52].cardPlayStatus;
-    Deck[b].isAce = Deck[52].isAce;
-  }
-}//end of deckOfCards
 
 
 
