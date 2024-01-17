@@ -1,3 +1,4 @@
+//Card.hpp
 #ifndef CARD_H
 #define CARD_H
 
@@ -11,15 +12,14 @@
 #include <vector>
 
 //Structure for cards
-struct Card 
-{
+struct Card {
   std::string suit;
   std::string face;
   int cardValue;
   int cardPlayStatus;
   bool isAce;
 
-}Deck[53];//Array for cards
+};
 
 void deckOfCards();
 void displayCard(Card &card);

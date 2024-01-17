@@ -1,3 +1,4 @@
+//Player.cpp
 #include <iostream>
 #include <string>
 #include <stdlib.h>
@@ -15,7 +16,7 @@
     currentBet = new_currentBet;
 }*/
 
-void Player::setPlayerName(std::string name){
+void Player::setPlayerName(const std::string& name){
     playerName = name;
 }
 
@@ -27,14 +28,14 @@ void Player::setPlayerScore(int score){
     playerScore = score;
 }
 
-std::string Player::getPlayerName() {
+std::string Player::getPlayerName() const {
     return playerName;
 }
 
-int Player::getPlayerBet() {
+int Player::getPlayerBet() const {
     return currentBet;
 }
 
-int Player::getPlayerScore() {
+int Player::getPlayerScore() const {
     return playerScore;
 }

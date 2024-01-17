@@ -1,3 +1,4 @@
+//Card.cpp
 #include <iostream>
 #include <string>
 #include <stdlib.h>
@@ -10,17 +11,20 @@
 #include "Card.hpp"
 
 //Function initializes deck by looping and placing the arrays into Deck[i]
+
+Card Deck[53];
+
 void deckOfCards()
 {
   std::string face [13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
   std::string suit [4] = {"Spades", "Clubs", "Hearts", "Diamnonds"};
   int cardValue [13] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11};
-  int cardPlayStatus[3] = {0, 1, 2}; 
+ // int cardPlayStatus[3] = {0, 1, 2}; 
 
   int suitIndex = 0;
 
-  for(int i = 0; i < 52; i++)
-  {
+  for(int i = 0; i < 52; i++) {
+
 		Deck[i].face = face[i % 13];
 		Deck[i].suit = suit[suitIndex];
 		Deck[i].cardValue = cardValue[i % 13];

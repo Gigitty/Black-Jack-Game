@@ -1,4 +1,4 @@
-//Aly Abousen
+//main.cpp
 
 //Libraries that are needed for the code
 #include <iostream>

@@ -1,3 +1,4 @@
+//Player.hpp
 #ifndef PLAYER_H
 #define PLAYER_H
 
@@ -16,17 +17,17 @@ class Player{
     std::string playerName;
     int playerScore;
     int currentBet;
-    Card currentHand [5];
+    //Card currentHand [5];
 
     public:    
 
     //Player(std::string new_name, int new_currentBet);    
-    void setPlayerName(std::string name);
-    std::string getPlayerName();
+    void setPlayerName(const std::string& name);
+    std::string getPlayerName() const;
     void setPlayerBet(int bet);
-    int getPlayerBet();
+    int getPlayerBet() const;
     void setPlayerScore(int score);
-    int getPlayerScore();
+    int getPlayerScore() const;
 
     
 };
