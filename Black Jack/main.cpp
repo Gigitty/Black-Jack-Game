@@ -44,8 +44,10 @@ int main()
     welcomeScreen();//Displays Welcome Screen
     cin >> playCount;//Gets the number of players
 
-    vector <Player> players(playCount);//Creates a vector of players
     Player dealer;//Creates a dealer
+    dealer.resetPlayer();
+    vector <Player> players(playCount);//Creates a vector of players
+    
 
     //Loop to get the name of each player
     for (int i = 0; i < playCount; i++) {
@@ -115,6 +117,7 @@ int main()
                         displayCard(players[i].currentHand[x]); cout << endl;
                         players[i].setHandValue(players[i].currentHand[x].cardValue);
                         isValidIn = true;
+                        x++;
                         break;
                     
                     case 'b':
@@ -131,9 +134,8 @@ int main()
                         cout << "Invalid Input. Please Enter H or S." << endl;
                         break;
                     }
-                }
-                x++;
-            } while (hitOrStand == 'h');
+                }                
+            } while (hitOrStand == 'h' || hitOrStand == 'H');
         }
 
         //Second Dealer Card is Flipped and more cards are played if necessary
@@ -150,7 +152,7 @@ int main()
                 cout << "Congratualtions! The following players have won the round." << endl;
 
                 for (int i = 0; i < playCount; i++) {
-                    if (players[i].getBust() == false) {
+                    if (!players[i].getBust()) {
                         cout << players[i].getPlayerName() << endl;
                         players[i].setPlayerScore(players[i].getPlayerScore() + (players[i].getHandValue() * 2));
                     }
@@ -160,7 +162,7 @@ int main()
 
             else if (dealer.getHandValue() <= 21) { //If the dealer doesn't bust     
                 for (int i = 0; i < playCount; i++) {
-                    while (!players[i].getBust()) {
+                    if (!players[i].getBust()) {
 
                         if (players[i].getHandValue() < dealer.getHandValue()) {
                             cout << players[i].getPlayerName() << ": Lost." << endl;
@@ -182,7 +184,16 @@ int main()
                     }
                 }
             }
-            roundOver = true;
+
+            for (int i = 0; i < playCount; i++) {
+                if (!players[i].getBust()) {
+                    break;
+                }
+                else if(i < playCount -1){
+                    continue;
+                }
+                roundOver = true;
+            }
         }
         //Loop Starts Again if player inputs yes
         cout << "Want to play again? (y/n)" << endl;
@@ -195,7 +206,6 @@ int main()
             }
             dealer.resetPlayer();
             printf("\033c");//Clears output
-            continue;
         }
         else if (playerChoice == 'n')
         {

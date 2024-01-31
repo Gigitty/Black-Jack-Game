@@ -1,1 +1,2 @@
 C:\Users\abous\OneDrive\Documents\GitHub\Game\ConsoleApplication1\x64\Debug\Black Jack Game.exe
+C:\Users\abous\OneDrive\Documents\GitHub\Black-Jack-Game\Black Jack\x64\Debug\Black Jack Game.exe
