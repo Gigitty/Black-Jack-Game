@@ -7,9 +7,7 @@
 #include <stdlib.h>
 #include <cstdio>
 #include <cstdlib>
-#include <time.h>
-#include <ctime>
-#include <vector>
+#include <map>
 
 #include "Card.hpp"
 
@@ -19,10 +17,11 @@ class Player {
     int bet;
     int handValue;
     bool isBust;
-    bool isPush;
+    bool isSplit;
 
 public:
-    Card currentHand[5];
+    std::map<int, Card> currentHand;
+    std::map<int, Card> splitHand;
 
     void setPlayerName(const std::string& playerName);
     std::string getPlayerName() const;
@@ -34,8 +33,8 @@ public:
     int getHandValue() const;
     void setBust();
     bool getBust() const;
-    void setPush();
-    bool getPush() const;
+    void setSplit();
+    bool getSplit() const;
     void resetPlayer();
 
 };

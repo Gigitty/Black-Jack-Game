@@ -4,9 +4,6 @@
 #include <stdlib.h>
 #include <cstdio>
 #include <cstdlib>
-#include <time.h>
-#include <ctime>
-#include <vector>
 
 #include "Player.hpp"
 
@@ -14,7 +11,7 @@ void Player::setPlayerName(const std::string& playerName) {
     name = playerName;
     score = 1000;
     isBust = false;
-    isPush = false;
+    isSplit = false;
 }
 
 void Player::setPlayerBet(int currentBet) {
@@ -34,8 +31,8 @@ void Player::setBust() {
     isBust = true;
 }
 
-void Player::setPush() {
-    isPush = true;
+void Player::setSplit() {
+    isSplit = true;
 }
 
 std::string Player::getPlayerName() const {
@@ -58,12 +55,11 @@ bool Player::getBust() const {
     return isBust;
 }
 
-bool Player::getPush() const {
-    return isPush;
+bool Player::getSplit() const {
+    return isSplit;
 }
 
 void Player::resetPlayer() {
     isBust = false;
-    isPush = false;
     handValue = 0;
 }
