@@ -43,7 +43,7 @@ int main()
     printf("\033c");//Clears Screen
     welcomeScreen();//Displays Welcome Screen
     cin >> playCount;//Gets the number of players
-
+    int ogPlayCnt = playCount; //Maintains original playcount
     Player dealer;//Creates a dealer
     dealer.resetPlayer();
     vector <Player> players(playCount);//Creates a vector of players
@@ -108,14 +108,13 @@ int main()
                     if (playerChoice == 'y')
                     {
                         playCount += 1;
-                        plyr->currentHand[1] = dealCard();
-                        players.insert(players.begin() + playCount - i, *plyr);
-                        (plyr+ 1)->setSplit();
+                        players.insert(players.end() - i , *plyr);
+                        players[playCount - i].setSplit();
 
                         players[playCount - i].currentHand[1] = dealCard();
 
                         plyr->setPlayerScore(plyr->getPlayerScore() - plyr->getPlayerBet());
-
+                        displayCard(players[playCount - i].currentHand[0]); cout << " & ";  displayCard(players[playCount - i].currentHand[1]);
                         isValidIn = true;
                     }
                     else if (playerChoice == 'n')
@@ -285,6 +284,7 @@ int main()
                     plyr->resetPlayer();
                 }
                 dealer.resetPlayer();
+                playCount = ogPlayCnt;
                 printf("\033c");//Clears output
                 isValidIn = true;
             }
